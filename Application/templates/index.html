@@ -50,9 +50,9 @@
           </div>
           <div class="row form-row mt-2 query4 {% if query != '4' %}d-none{% endif %}">
               <form class="form-inline" method="POST">
-                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-2" name="longitude" placeholder="Longitude">
-                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-2" name="latitude" placeholder="Latitude">
-                  <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-2" name="radius" placeholder="Distance (Meters)">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-2" name="longitude" placeholder="Longitude" value="{% if query == '4' %}{{values[0]}}{% endif %}">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-2" name="latitude" placeholder="Latitude" value="{% if query == '4' %}{{values[1]}}{% endif %}">
+                  <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-2" name="radius" placeholder="Distance (Meters)" value="{% if query == '4' %}{{values[2]}}{% endif %}">
                   <input type="hidden" name="selectedQuery" value="4">
                   
                   <button type="submit" class="btn btn-success">Submit</button>

@@ -1,4 +1,5 @@
 Application/__pycache__
+Application/templates/map.html
 Databases/mongo_data/
 Databases/neo4j_data/
 Resources/Books/
