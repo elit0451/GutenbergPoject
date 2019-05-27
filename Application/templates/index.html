@@ -50,8 +50,9 @@
           </div>
           <div class="row form-row mt-2 query4 {% if query != '4' %}d-none{% endif %}">
               <form class="form-inline" method="POST">
-                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="Latitude">
-                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="Longitude">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-2" name="longitude" placeholder="Longitude">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-2" name="latitude" placeholder="Latitude">
+                  <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-2" name="radius" placeholder="Distance">
                   <input type="hidden" name="selectedQuery" value="4">
                   
                   <button type="submit" class="btn btn-success">Submit</button>
@@ -63,7 +64,7 @@
           <div class="row my-5">
             <div class="col-sm-12">
 
-            {% if query == "1" or query == "4"%}
+            {% if query == "1"%}
             <div class="jumbotron bg-light">
               <table class="table table-hover query1 query4">
                   <thead>
@@ -90,6 +91,35 @@
                   {% include 'map.html' %}
               </div>
             </div>
+            {% endif %}
+
+            {% if query == "4"%}
+            <div class="jumbotron bg-light">
+              <table class="table query1 query4">
+                  <thead>
+                    <tr>
+                      <th>City</th>
+                      <th>Book</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for city in result %}
+                      <tr>
+                          <td>{{city[0]}}</td>
+                          <td>
+                            <table class="table-striped">
+                              {% for book in city[1] %}
+                                <tr>
+                                  <td>{{book}}</td>
+                                </tr>
+                              {% endfor %}
+                            </table>
+                          </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             {% endif %}
 
             </div>

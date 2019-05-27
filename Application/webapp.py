@@ -34,6 +34,15 @@ def getQuery3Cities(results):
     
     return list(cities)
 
+def getQuery4(long, lat, radius):
+    return '''MATCH (city:City)
+            WITH point({ x: city.long, y: city.latt, crs: 'cartesian' }) AS p1, point({ x: ''' + long + ''' , y: ''' + lat + ''', crs: 'cartesian' }) AS p2, city
+            WHERE distance(p1,p2) < ''' + radius + '''
+            WITH city
+            MATCH (b:Book)-[:MENTIONS]-(c:City)
+            WHERE id(c) = id(city)
+            RETURN c.name, collect(b.title)'''
+
 @app.route('/', methods = ['GET'])
 def getIndex():
     return render_template('index.html')
@@ -76,6 +85,14 @@ def postIndex():
 
     elif(selectedQuery == '4'):
         _showMain = True
+        longitude = request.form.get('longitude')
+        latitude = request.form.get('latitude')
+        radius = request.form.get('radius')
+        _values.append(longitude)
+        _values.append(latitude)
+        _values.append(radius)
+        neo4jQuery = getQuery4(longitude, latitude, radius)
+        _result = neov(neo4jQuery)
 
     return render_template('index.html', showMain=_showMain, showExtra=_showExtra, query=selectedQuery, result=_result, resultExtra=_resultExtra, values=_values)
 
