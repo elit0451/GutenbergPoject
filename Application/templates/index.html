@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+      <nav class="navbar navbar-light bg-light">
+          <a class="navbar-brand">Exam project</a>
+      </nav>
+      <div class="container">
+        <div class="jumbotron bg-light">
+          <div class="row">
+              <select name="queryPicker" id="queryPicker" class="form-control">
+                  <option value="1" {% if query == '1' %}selected{% endif %}>Query 1</option>
+                  <option value="2" {% if query == '2' %}selected{% endif %}>Query 2</option>
+                  <option value="3" {% if query == '3' %}selected{% endif %}>Query 3</option>
+                  <option value="4" {% if query == '4' %}selected{% endif %}>Query 4</option>
+              </select>
+          </div>
+          <div class="row form-row mt-2 query1 {% if query != '1' %}d-none{% endif %}">
+              <form class="form-inline" method="POST">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="cityName" placeholder="City Name" value="{% if query == '1' %}{{values[0]}}{% endif %}">
+                  <input type="hidden" name="selectedQuery" value="1">
+
+                  <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+          </div>
+          <div class="row form-row mt-2 query2 {% if query != '2' %}d-none{% endif %}">
+              <form class="form-inline" method="POST">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="bookTitle" placeholder="Book Title" value="{% if query == '2' %}{{values[0]}}{% endif %}">
+                  <input type="hidden" name="selectedQuery" value="2">
+                  
+                  <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+          </div>
+          <div class="row form-row mt-2 query3 {% if query != '3' %}d-none{% endif %}">
+              <form class="form-inline" method="POST">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="authorName" placeholder="Author Name" value="{% if query == '3' %}{{values[0]}}{% endif %}">
+                  <input type="hidden" name="selectedQuery" value="3">
+                  
+                  <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+          </div>
+          <div class="row form-row mt-2 query4 {% if query != '4' %}d-none{% endif %}">
+              <form class="form-inline" method="POST">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="Latitude">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="Longitude">
+                  <input type="hidden" name="selectedQuery" value="4">
+                  
+                  <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+          </div>
+        </div>
+
+        {% if showMain %}
+          <div class="row my-5">
+            <div class="col-sm-12">
+
+            {% if query == "1" or query == "4"%}
+            <div class="jumbotron bg-light">
+              <table class="table table-hover query1 query4">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Author</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in result %}
+                      <tr>
+                          <td>{{item[0]}}</td>
+                          <td>{{item[1]}}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% endif %}
+
+            {% if query == "2" or query == "3" %}
+            <div class="jumbotron bg-light">
+              <div class="query2 query3" style="min-height: 500px !important; height: 500px;">
+                  {% include 'map.html' %}
+              </div>
+            </div>
+            {% endif %}
+
+            </div>
+          </div>
+        {% endif %}
+
+        {% if showExtra %}
+          <div class="row">
+            <div class="col-sm-12">
+              {% if query == "3"%}
+                <div class="jumbotron bg-light">
+                  <table class="table table-hover query3">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for title in resultExtra %}
+                        <tr>
+                            <td>{{title}}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+        
+      </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script>
+      $('#queryPicker').on('change', function(){       
+          if ($(this).val() == 1 ) {
+              $('.query2').addClass('d-none'); 
+              $('.query3').addClass('d-none'); 
+              $('.query4').addClass('d-none');  
+              $('.query1').removeClass('d-none');    
+          }
+
+          if ($(this).val() == 2 ) {
+              $('.query1').addClass('d-none'); 
+              $('.query3').addClass('d-none'); 
+              $('.query4').addClass('d-none');    
+              $('.query2').removeClass('d-none');  
+          }
+
+          if ($(this).val() == 3 ) {
+              $('.query1').addClass('d-none'); 
+              $('.query2').addClass('d-none'); 
+              $('.query4').addClass('d-none');  
+              $('.query3').removeClass('d-none');    
+          }
+
+          if ($(this).val() == 4 ) {
+              $('.query1').addClass('d-none'); 
+              $('.query2').addClass('d-none'); 
+              $('.query3').addClass('d-none');  
+              $('.query4').removeClass('d-none');   
+          }
+      })
+      </script>
+
+
+
+    
+  </body>
+</html>
