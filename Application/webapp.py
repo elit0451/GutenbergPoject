@@ -36,7 +36,7 @@ def getQuery3Cities(results):
 
 def getQuery4(long, lat, radius):
     return '''MATCH (city:City)
-            WITH point({ x: city.long, y: city.latt, crs: 'cartesian' }) AS p1, point({ x: ''' + long + ''' , y: ''' + lat + ''', crs: 'cartesian' }) AS p2, city
+            WITH point({ x: city.long, y: city.latt, crs: 'WGS-84' }) AS p1, point({ x: ''' + long + ''' , y: ''' + lat + ''', crs: 'WGS-84' }) AS p2, city
             WHERE distance(p1,p2) < ''' + radius + '''
             WITH city
             MATCH (b:Book)-[:MENTIONS]-(c:City)
