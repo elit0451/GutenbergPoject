@@ -13,7 +13,7 @@ def neo(command, driver):
             result = session.run(command)
         return result # result is a resultset/cursor for neo4j
     except Exception as ex:
-        print(str(ex), file=sys.stderr)
+        print(ex, file=sys.stderr)
         
 def neov(command):
     driver = getNeoDriver()

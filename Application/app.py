@@ -59,8 +59,8 @@ for bookFile in bookPaths:
 		print('Error in ' + booksDir + '/' + bookFile)
 
 print('Finished parsing books')
-#mongoImporter.importCityData('../Resources/cities5000.csv')
-#mongoImporter.importBooksData(booksData)
+mongoImporter.importCityData('../Resources/cities5000.csv')
+mongoImporter.importBooksData(booksData)
 neo4jImporter.loadCitiesFromCSV('cities5000.csv')
 neo4jImporter.composeBookCreate(booksData)
 
