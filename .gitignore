@@ -1,0 +1,6 @@
+Application/__pycache__
+Databases/mongo_data/
+Databases/neo4j_data/
+Resources/Books/
+Resources/Offline_Catalogue/
+*.pyc
