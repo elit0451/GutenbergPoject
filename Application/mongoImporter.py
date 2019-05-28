@@ -16,18 +16,19 @@ def importCityData(path):
 		csv_reader = csv.reader(csv_file, delimiter='\t')
 		geodata = []
 		for row in csv_reader:
-		# coordinates: [longitude, latitude]
-			datum = {
-				'city':str(row[2]),
-				'location':{
-					'type': 'Point',
-					'coordinates': [float(row[5]), float(row[4])]
+			if(row[4] != '' and row[5] != ''):
+			# coordinates: [longitude, latitude]
+				datum = {
+					'city':str(row[2]),
+					'location':{
+						'type': 'Point',
+						'coordinates': [float(row[5]), float(row[4])]
+					}
 				}
-			}
-			geodata.append(datum)
-			if(len(geodata) > 500):
-				db.geodata.insert_many(geodata)
-				geodata.clear()
+				geodata.append(datum)
+				if(len(geodata) > 500):
+					db.geodata.insert_many(geodata)
+					geodata.clear()
 		db.geodata.insert_many(geodata)
 		print ('Finished importing cities')
 

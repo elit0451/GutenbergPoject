@@ -15,6 +15,8 @@ def postIndex():
     _showExtra = False
     _createMap = False
     _values = []
+    _time = 0
+    _map = ''
     
     selectedQuery = request.form.get('selectedQuery')
     selectedDB = request.form.get('selectedDB')
@@ -46,13 +48,12 @@ def postIndex():
         _values.append(latitude)
         _values.append(radius)
     
-    
-    _result,_resultExtra = executeQuery(selectedDB, selectedQuery, _values)
+    _result, _resultExtra, _time = executeQuery(selectedDB, selectedQuery, _values)
 
     if(_createMap):
-        createMap(_result)
+        _map = createMap(_result).replace('60%', '50%')
 
-    return render_template('index.html', showMain=_showMain, showExtra=_showExtra, query=selectedQuery, result=_result, resultExtra=_resultExtra, values=_values)
+    return render_template('index.html', showMain=_showMain, showExtra=_showExtra, query=selectedQuery, result=_result, resultExtra=_resultExtra, values=_values, time=_time, map=_map)
 
 if __name__ == '__main__':
     app.run(host ='0.0.0.0', port = 3333, debug = True)

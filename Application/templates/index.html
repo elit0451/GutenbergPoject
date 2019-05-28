@@ -19,7 +19,7 @@
       <div class="container">
         <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
           <div class="row">
-          	  <h5 style="color: #727C92;">Select a query:</h5>
+          	  <h5 style="color: #727C92;">Select a query: {{time}}</h5>
               <select name="queryPicker" id="queryPicker" class="form-control">
               	  <option value="" selected disabled hidden>Choose here</option>
                   <option value="1" {% if query == '1' %}selected{% endif %}>Query 1</option>
@@ -33,38 +33,38 @@
                   <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="cityName" placeholder="City Name" value="{% if query == '1' %}{{values[0]}}{% endif %}">
                   <input type="hidden" name="selectedQuery" value="1">
                   <input type="hidden" name="selectedDB">
-                  <button type="submit" class="btn btn-success" onclick="executeForm(1, 'neo4j');">Execute Neo4j</button>
-                  <button type="submit" class="btn btn-success" onclick="executeForm(1, 'mongo');">Execute MongoDB</button>
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(1, 'neo4j');">Execute Neo4j</button>
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(1, 'mongo');">Execute MongoDB</button>
                 
                 </form>
           </div>
-          <div class="row form-row mt-2 query2 {% if query != '2' %}d-none{% endif %}">
+          <div class="row form-row mt-4 query2 {% if query != '2' %}d-none{% endif %}">
               <form class="form-inline" name="form2" method="POST">
                   <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="bookTitle" placeholder="Book Title" value="{% if query == '2' %}{{values[0]}}{% endif %}">
                   <input type="hidden" name="selectedQuery" value="2">
                   <input type="hidden" name="selectedDB">
-                  <button type="submit" class="btn btn-success" onclick="executeForm(2, 'neo4j');">Execute Neo4j</button>
-                  <button type="submit" class="btn btn-success" onclick="executeForm(2, 'mongo');">Execute MongoDB</button>
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(2, 'neo4j');">Execute Neo4j</button>
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(2, 'mongo');">Execute MongoDB</button>
                 </form>
           </div>
-          <div class="row form-row mt-2 query3 {% if query != '3' %}d-none{% endif %}">
+          <div class="row form-row mt-4 query3 {% if query != '3' %}d-none{% endif %}">
               <form class="form-inline" name="form3" method="POST">
                   <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="authorName" placeholder="Author Name" value="{% if query == '3' %}{{values[0]}}{% endif %}">
                   <input type="hidden" name="selectedQuery" value="3">
                   <input type="hidden" name="selectedDB">
-                  <button type="submit" class="btn btn-success" onclick="executeForm(3, 'neo4j');">Execute Neo4j</button>
-                  <button type="submit" class="btn btn-success" onclick="executeForm(3, 'mongo');">Execute MongoDB</button>
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(3, 'neo4j');">Execute Neo4j</button>
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(3, 'mongo');">Execute MongoDB</button>
                 </form>
           </div>
-          <div class="row form-row mt-2 query4 {% if query != '4' %}d-none{% endif %}">
+          <div class="row form-row mt-4 query4 {% if query != '4' %}d-none{% endif %}">
               <form class="form-inline" name="form4" method="POST">
-                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-2" name="longitude" placeholder="Longitude" value="{% if query == '4' %}{{values[0]}}{% endif %}">
-                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-2" name="latitude" placeholder="Latitude" value="{% if query == '4' %}{{values[1]}}{% endif %}">
-                  <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-2" name="radius" placeholder="Distance (Meters)" value="{% if query == '4' %}{{values[2]}}{% endif %}">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="longitude" placeholder="Longitude" value="{% if query == '4' %}{{values[0]}}{% endif %}">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="latitude" placeholder="Latitude" value="{% if query == '4' %}{{values[1]}}{% endif %}">
+                  <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-0" name="radius" placeholder="Distance (Meters)" value="{% if query == '4' %}{{values[2]}}{% endif %}">
                   <input type="hidden" name="selectedQuery" value="4">
                   <input type="hidden" name="selectedDB">
-                  <button type="submit" class="btn btn-success" onclick="executeForm(4, 'neo4j');">Execute Neo4j</button>
-                  <button type="submit" class="btn btn-success" onclick="executeForm(4, 'mongo');">Execute MongoDB</button>
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(4, 'neo4j');">Execute Neo4j</button>
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(4, 'mongo');">Execute MongoDB</button>
                 </form>
           </div>
         </div>
@@ -78,8 +78,8 @@
               <table class="table table-hover query1 query4">
                   <thead>
                     <tr>
-                      <th>Title</th>
-                      <th>Author</th>
+                      <th style="color: #727C92;">Title</th>
+                      <th style="color: #727C92;">Author</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -97,7 +97,7 @@
             {% if query == "2" or query == "3" %}
             <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
               <div class="query2 query3" style="min-height: 500px !important; height: 500px;">
-                  {% include 'map.html' %}
+                  {{map|safe}}
               </div>
             </div>
             {% endif %}
@@ -107,8 +107,8 @@
               <table class="table query1 query4">
                   <thead>
                     <tr>
-                      <th>City</th>
-                      <th>Book</th>
+                      <th style="color: #727C92;">City</th>
+                      <th style="color: #727C92;">Book</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -143,7 +143,7 @@
                   <table class="table table-hover query3">
                     <thead>
                       <tr>
-                        <th>Title</th>
+                        <th style="color: #727C92;">Title</th>
                       </tr>
                     </thead>
                     <tbody>

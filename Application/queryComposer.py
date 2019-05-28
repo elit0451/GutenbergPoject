@@ -1,5 +1,6 @@
 import mongoImporter
 from neo4jImporter import neov
+from time import time
 
 def mongoQuery1(cityName):
     books = []
@@ -15,13 +16,14 @@ def mongoQuery1(cityName):
             }
         }
     ]
-
+    start = time()
     results = mongoImporter.executeQueryAgg('books', pipeline1)
+    end = time()
 
     for book in results:
         books.append([book['title'],book['author']])
 
-    return books
+    return (books, end - start)
 
 def mongoQuery2(bookTitle):
     coordinates = []
@@ -50,7 +52,10 @@ def mongoQuery2(bookTitle):
         }
     ]
 
+    start = time()
     results = mongoImporter.executeQueryAgg('books', pipeline2)
+    end = time()
+
     for result in results:
         if('location' in result):
             # latitude, longitude
@@ -59,7 +64,7 @@ def mongoQuery2(bookTitle):
                 result['location']['coordinates'][0], 
                 result['location']['coordinates'][1]
                 ])
-    return coordinates
+    return (coordinates, end - start)
     
 def mongoQuery3(authorName):
     cityBooks = []
@@ -76,9 +81,14 @@ def mongoQuery3(authorName):
         }
     ]
 
-    for result in mongoImporter.executeQueryAgg('books', pipeline3):
+    start = time()
+    results = mongoImporter.executeQueryAgg('books', pipeline3)
+    end = time()
+
+    for result in results:
         cityBooks.append(result)
-    return cityBooks
+
+    return (cityBooks, end - start)
 
 def mongoQuery3Titles(results):
     titles = set()
@@ -86,14 +96,19 @@ def mongoQuery3Titles(results):
         titles.add(result['title'])
         
     return list(titles)
+
 def mongoQuery3Cities(titles):
     cities = set()
+    totalTime = 0
+
     for title in titles:
-        query1Cities = mongoQuery2(title)
+        query1Cities, queryTime = mongoQuery2(title)
+        totalTime += queryTime
+
         for city in query1Cities:
             cities.add((city[0], city[1], city[2]))
 
-    return list(cities)
+    return (list(cities), totalTime)
 
 def mongoQuery4(long, lat, radius):
     results = []
@@ -119,78 +134,110 @@ def mongoQuery4(long, lat, radius):
             }
         }
     ]
-    
-    for result in mongoImporter.executeQueryAgg('geodata', pipeline4):
-        books = mongoQuery1(result['city'])
+    start = time()
+    queryResults = mongoImporter.executeQueryAgg('geodata', pipeline4)
+    end = time()
+
+    totalTime = end - start
+
+    for result in queryResults:
+        books, queryTime = mongoQuery1(result['city'])
+        totalTime += queryTime
         titles = []
         for book in books:
             titles.append(book[0])
         if(len(books) > 0):
             results.append((result['city'], titles))
 
-    return results
+    return (results, totalTime)
 
 
 def neoQuery1(city):
-    return '''match (b:Book)-[:MENTIONS]-(c:City {name: "''' + str(city) + '''"})
-            return b.title, b.author'''
+    start = time()
+    result = neov('''match (b:Book)-[:MENTIONS]-(c:City {name: "''' + str(city) + '''"})
+            return b.title, b.author''')
+    end = time()
+
+    return (result, end - start)
+
 def neoQuery2(title):
-    return '''match (:Book {title:"''' + str(title) + '''"})-[:MENTIONS]-(c:City)
-            return c.name,c.long,c.latt'''
+    start = time()
+    result = neov('''match (:Book {title:"''' + str(title) + '''"})-[:MENTIONS]-(c:City)
+            return c.name, c.long,c.latt''')
+    end = time()
+
+    return (result, end - start)
+
 def neoQuery3(author):
-    return '''match (b:Book {author:"''' + author + '''"})-[:MENTIONS]-(c:City)
-                        return b.title, collect(c)'''
+    start = time()
+    result = neov('''match (b:Book {author:"''' + author + '''"})-[:MENTIONS]-(c:City)
+                        return b.title, collect(c)''')
+    end = time()
+
+    return (result, end - start)
+
 def neoQuery3Titles(results):
     titles = set()
     for result in results:
         titles.add(result[0])
         
     return list(titles)
+
 def neoQuery3Cities(results):
     cities = set()
     for result in results:
         for city in result[1]:
-            cities.add((city['name'],city['long'],city['latt']))
+            cities.add((city['name'], city['long'], city['latt']))
     return list(cities)
+
 def neoQuery4(long, lat, radius):
-    return '''MATCH (city:City)
+    start = time()
+    result = neov('''MATCH (city:City)
             WITH point({ x: city.long, y: city.latt, crs: 'WGS-84' }) AS p1, point({ x: ''' + long + ''' , y: ''' + lat + ''', crs: 'WGS-84' }) AS p2, city
             WHERE distance(p1,p2) < ''' + radius + '''
             WITH city
             MATCH (b:Book)-[:MENTIONS]-(c:City)
             WHERE id(c) = id(city)
-            RETURN c.name, collect(b.title)'''
+            RETURN c.name, collect(b.title)''')
+    end = time()
+
+    return (result, end - start)
 
 def executeQuery(database, query, values):
     if(database == 'neo4j'):
         if(query == '1'):
-            return (neov(neoQuery1(values[0])), None)
+            result, time = neoQuery1(values[0])
+            return (result, None, time)
 
         elif(query == '2'):
-            return (neov(neoQuery2(values[0])), None)
+            result, time = neoQuery2(values[0])
+            return (result, None, time)
 
         elif(query == '3'):
-            query = neoQuery3(values[0])
-            preResult = neov(query)
-            result = neoQuery3Cities(preResult)
-            resultExtra = neoQuery3Titles(preResult)
-            return (result, resultExtra)
+            query, time = neoQuery3(values[0])
+            result = neoQuery3Cities(query)
+            resultExtra = neoQuery3Titles(query)
+            return (result, resultExtra, time)
 
         elif(query == '4'):
-            return (neov(neoQuery4(values[0],values[1],values[2])), None)
+            result, time = neoQuery4(values[0], values[1],values[2])
+            return (result, None, time)
+            
     elif(database == 'mongo'):
         if(query == '1'):
-            return (mongoQuery1(values[0]), None)
+            result, time = mongoQuery1(values[0])
+            return (result, None, time)
 
         elif(query == '2'):
-            return (mongoQuery2(values[0]), None)
+            result, time = mongoQuery2(values[0])
+            return (result, None, time)
 
         elif(query == '3'):
-            preResult = mongoQuery3(values[0])
+            preResult, time = mongoQuery3(values[0])
             resultExtra = mongoQuery3Titles(preResult)
-            result = mongoQuery3Cities(resultExtra)
-
-            return (result, resultExtra)
+            result, queryTime = mongoQuery3Cities(resultExtra)
+            return (result, resultExtra, time + queryTime)
 
         elif(query == '4'):
-            return (mongoQuery4(values[0],values[1],values[2]), None)
+            result, time = mongoQuery4(values[0],values[1],values[2])
+            return (result, None, time)
