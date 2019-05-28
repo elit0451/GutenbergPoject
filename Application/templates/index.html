@@ -8,23 +8,27 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
-    <title>Exam project</title>
+    <title>Gutenberg project</title>
   </head>
   <body>
-      <nav class="navbar navbar-light bg-light">
-          <a class="navbar-brand">Exam project</a>
+      <nav class="navbar navbar-light" style="text-align:center; background-color: #929FBA;">
+          <a class="navbar-brand" style="color: #ffffff;">Welcome to <b>Gutenberg Querier</b></a>
+          <a class="navbar-brand" style="color: #ffffff;">Exam project</br><em>&nbsp;&nbsp;&nbsp;&nbsp;"Databases for Developers"</em> course</a>
       </nav>
+      <br>	
       <div class="container">
-        <div class="jumbotron bg-light">
+        <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
           <div class="row">
+          	  <h5 style="color: #727C92;">Select a query:</h5>
               <select name="queryPicker" id="queryPicker" class="form-control">
+              	  <option value="" selected disabled hidden>Choose here</option>
                   <option value="1" {% if query == '1' %}selected{% endif %}>Query 1</option>
                   <option value="2" {% if query == '2' %}selected{% endif %}>Query 2</option>
                   <option value="3" {% if query == '3' %}selected{% endif %}>Query 3</option>
                   <option value="4" {% if query == '4' %}selected{% endif %}>Query 4</option>
               </select>
           </div>
-          <div class="row form-row mt-2 query1 {% if query != '1' %}d-none{% endif %}">
+          <div class="row form-row mt-4 query1 {% if query != '1' %}d-none{% endif %}">
               <form class="form-inline" name="form1" method="POST">
                   <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="cityName" placeholder="City Name" value="{% if query == '1' %}{{values[0]}}{% endif %}">
                   <input type="hidden" name="selectedQuery" value="1">
@@ -67,7 +71,7 @@
             <div class="col-sm-12">
 
             {% if query == "1"%}
-            <div class="jumbotron bg-light">
+            <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
               <table class="table table-hover query1 query4">
                   <thead>
                     <tr>
@@ -88,7 +92,7 @@
             {% endif %}
 
             {% if query == "2" or query == "3" %}
-            <div class="jumbotron bg-light">
+            <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
               <div class="query2 query3" style="min-height: 500px !important; height: 500px;">
                   {% include 'map.html' %}
               </div>
@@ -96,7 +100,7 @@
             {% endif %}
 
             {% if query == "4"%}
-            <div class="jumbotron bg-light">
+            <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
               <table class="table query1 query4">
                   <thead>
                     <tr>
@@ -132,7 +136,7 @@
           <div class="row">
             <div class="col-sm-12">
               {% if query == "3"%}
-                <div class="jumbotron bg-light">
+                <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
                   <table class="table table-hover query3">
                     <thead>
                       <tr>
@@ -166,7 +170,7 @@
                 document.form1.submit()
               }
             }
-            
+
       $('#queryPicker').on('change', function(){       
           if ($(this).val() == 1 ) {
               $('.query2').addClass('d-none'); 
@@ -197,9 +201,10 @@
           }
       })
       </script>
-
-
-
-    
   </body>
+  <footer class="page-footer font-small mdb-color fixed-bottom" style="background-color: #757F95;">
+      <div class="footer-copyright text-center py-3" style="color: #B4B8BF;">© 2019 Made by:
+          <a style="color: #ffffff;">David Alves & Elitsa Marinovska</a>
+        </div>
+    </footer>
 </html>
