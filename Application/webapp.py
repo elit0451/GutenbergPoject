@@ -51,7 +51,7 @@ def postIndex():
     _result, _resultExtra, _time = executeQuery(selectedDB, selectedQuery, _values)
 
     if(_createMap):
-        _map = createMap(_result).replace('60%', '50%')
+        _map = createMap(_result).replace('60%', '48%')
 
     return render_template('index.html', showMain=_showMain, showExtra=_showExtra, query=selectedQuery, result=_result, resultExtra=_resultExtra, values=_values, time=_time, map=_map)
 
