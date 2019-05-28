@@ -8,41 +8,6 @@ from flask import Flask,render_template, request,jsonify,Response
 
 app = Flask(__name__)
 
-
-
-def getQuery1(city):
-    return '''match (b:Book)-[:MENTIONS]-(c:City {name: "''' + str(city) + '''"})
-            return b.title, b.author'''
-def getQuery2(title):
-    return '''match (:Book {title:"''' + str(title) + '''"})-[:MENTIONS]-(c:City)
-            return c.name,c.long,c.latt'''
-def getQuery3(author):
-    return '''match (b:Book {author:"''' + author + '''"})-[:MENTIONS]-(c:City)
-                        return b.title, collect(c)'''
-def getQuery3Titles(results):
-    titles = set()
-    for result in results:
-        titles.add(result[0])
-        
-    return list(titles)
-
-def getQuery3Cities(results):
-    cities = set()
-    for result in results:
-        for city in result[1]:
-            cities.add((city['name'],city['long'],city['latt']))
-    
-    return list(cities)
-
-def getQuery4(long, lat, radius):
-    return '''MATCH (city:City)
-            WITH point({ x: city.long, y: city.latt, crs: 'WGS-84' }) AS p1, point({ x: ''' + long + ''' , y: ''' + lat + ''', crs: 'WGS-84' }) AS p2, city
-            WHERE distance(p1,p2) < ''' + radius + '''
-            WITH city
-            MATCH (b:Book)-[:MENTIONS]-(c:City)
-            WHERE id(c) = id(city)
-            RETURN c.name, collect(b.title)'''
-
 @app.route('/', methods = ['GET'])
 def getIndex():
     return render_template('index.html')
@@ -56,19 +21,23 @@ def postIndex():
     _resultExtra = ''
     _values = []
     selectedQuery = request.form.get('selectedQuery')
+    selectedDB = request.form.get('selectedDB')
     
     if(selectedQuery == '1'):
         _showMain = True
         city = request.form.get('cityName')
         _values.append(city)
-        neo4jQuery = getQuery1(city)
-        _result = neov(neo4jQuery)
+        if(selectedDB == 'neo4j'):
+            neo4jQuery = neoQuery1(city)
+            _result = neov(neo4jQuery)
+        elif(selectedDB == 'mongo'):    
+            print('Mongo')
 
     elif(selectedQuery == '2'):
         _showMain = True
         bookTitle = request.form.get('bookTitle')
         _values.append(bookTitle)
-        neo4jQuery = getQuery2(bookTitle)
+        neo4jQuery = neoQuery2(bookTitle)
         _result = neov(neo4jQuery)
         createMap(_result)
 
@@ -77,10 +46,10 @@ def postIndex():
         _showExtra = True
         authorName = request.form.get('authorName')
         _values.append(authorName)
-        neo4jQuery = getQuery3(authorName)
+        neo4jQuery = neoQuery3(authorName)
         preResult = neov(neo4jQuery)
-        _result = getQuery3Cities(preResult)
-        _resultExtra = getQuery3Titles(preResult)
+        _result = neoQuery3Cities(preResult)
+        _resultExtra = neoQuery3Titles(preResult)
         createMap(_result)
 
     elif(selectedQuery == '4'):
@@ -91,7 +60,7 @@ def postIndex():
         _values.append(longitude)
         _values.append(latitude)
         _values.append(radius)
-        neo4jQuery = getQuery4(longitude, latitude, radius)
+        neo4jQuery = neoQuery4(longitude, latitude, radius)
         _result = neov(neo4jQuery)
 
     return render_template('index.html', showMain=_showMain, showExtra=_showExtra, query=selectedQuery, result=_result, resultExtra=_resultExtra, values=_values)

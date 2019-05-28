@@ -25,15 +25,17 @@
               </select>
           </div>
           <div class="row form-row mt-2 query1 {% if query != '1' %}d-none{% endif %}">
-              <form class="form-inline" method="POST">
+              <form class="form-inline" name="form1" method="POST">
                   <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="cityName" placeholder="City Name" value="{% if query == '1' %}{{values[0]}}{% endif %}">
                   <input type="hidden" name="selectedQuery" value="1">
-
-                  <button type="submit" class="btn btn-success">Submit</button>
+                  <input type="hidden" name="selectedDB">
+                  <button type="submit" class="btn btn-success" onclick="executeForm(1, 'neo4j');">Execute Neo4j</button>
+                  <button type="submit" class="btn btn-success" onclick="executeForm(1, 'mongo');">Execute MongoDB</button>
+                
                 </form>
           </div>
           <div class="row form-row mt-2 query2 {% if query != '2' %}d-none{% endif %}">
-              <form class="form-inline" method="POST">
+              <form class="form-inline" name="form2" method="POST">
                   <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="bookTitle" placeholder="Book Title" value="{% if query == '2' %}{{values[0]}}{% endif %}">
                   <input type="hidden" name="selectedQuery" value="2">
                   
@@ -41,7 +43,7 @@
                 </form>
           </div>
           <div class="row form-row mt-2 query3 {% if query != '3' %}d-none{% endif %}">
-              <form class="form-inline" method="POST">
+              <form class="form-inline" name="form3" method="POST">
                   <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="authorName" placeholder="Author Name" value="{% if query == '3' %}{{values[0]}}{% endif %}">
                   <input type="hidden" name="selectedQuery" value="3">
                   
@@ -49,7 +51,7 @@
                 </form>
           </div>
           <div class="row form-row mt-2 query4 {% if query != '4' %}d-none{% endif %}">
-              <form class="form-inline" method="POST">
+              <form class="form-inline" name="form4" method="POST">
                   <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-2" name="longitude" placeholder="Longitude" value="{% if query == '4' %}{{values[0]}}{% endif %}">
                   <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-2" name="latitude" placeholder="Latitude" value="{% if query == '4' %}{{values[1]}}{% endif %}">
                   <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-2" name="radius" placeholder="Distance (Meters)" value="{% if query == '4' %}{{values[2]}}{% endif %}">
@@ -158,6 +160,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
     <script>
+      function executeForm(query, database){
+              if (query === 1) {
+                document.form1.selectedDB.value = database;
+                document.form1.submit()
+              }
+            }
+            
       $('#queryPicker').on('change', function(){       
           if ($(this).val() == 1 ) {
               $('.query2').addClass('d-none'); 
