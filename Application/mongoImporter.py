@@ -1,5 +1,5 @@
 import csv
-from pymongo import MongoClient
+from pymongo import MongoClient, TEXT, GEOSPHERE
 
 from pprint import pprint
 
@@ -8,6 +8,9 @@ db=client.gutenberg
 
 def importCityData(path):
 	db.geodata.delete_many({})
+	db.geodata.drop_indexes()
+	db.geodata.create_index([('city', TEXT)], name='city_index', default_language='english')
+	db.geodata.create_index([('location', GEOSPHERE)], name='location_index')
 	# '../Resources/cities5000.csv'
 	with open(path,'r',encoding='utf-8', errors='ignore') as csv_file:
 		csv_reader = csv.reader(csv_file, delimiter='\t')
@@ -25,7 +28,8 @@ def importCityData(path):
 			if(len(geodata) > 500):
 				db.geodata.insert_many(geodata)
 				geodata.clear()
-		print ('done importing cities')
+		db.geodata.insert_many(geodata)
+		print ('Finished importing cities')
 
 def importBooksData(booksData):
 	db.books.delete_many({})
@@ -41,7 +45,12 @@ def importBooksData(booksData):
 		if(len(books) > 500):
 			db.books.insert_many(books)
 			books.clear()
+	db.books.insert_many(books)
 	
-	print ('done importing books')
+	print ('Finished importing books')
 
-
+def executeQueryAgg(collection, query):
+	if(collection == 'books'):
+		return db.books.aggregate(query)
+	elif(collection == 'geodata'):
+		return db.geodata.aggregate(query)
