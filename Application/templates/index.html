@@ -42,16 +42,18 @@
               <form class="form-inline" name="form2" method="POST">
                   <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="bookTitle" placeholder="Book Title" value="{% if query == '2' %}{{values[0]}}{% endif %}">
                   <input type="hidden" name="selectedQuery" value="2">
-                  
-                  <button type="submit" class="btn btn-success">Submit</button>
+                  <input type="hidden" name="selectedDB">
+                  <button type="submit" class="btn btn-success" onclick="executeForm(2, 'neo4j');">Execute Neo4j</button>
+                  <button type="submit" class="btn btn-success" onclick="executeForm(2, 'mongo');">Execute MongoDB</button>
                 </form>
           </div>
           <div class="row form-row mt-2 query3 {% if query != '3' %}d-none{% endif %}">
               <form class="form-inline" name="form3" method="POST">
                   <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="authorName" placeholder="Author Name" value="{% if query == '3' %}{{values[0]}}{% endif %}">
                   <input type="hidden" name="selectedQuery" value="3">
-                  
-                  <button type="submit" class="btn btn-success">Submit</button>
+                  <input type="hidden" name="selectedDB">
+                  <button type="submit" class="btn btn-success" onclick="executeForm(3, 'neo4j');">Execute Neo4j</button>
+                  <button type="submit" class="btn btn-success" onclick="executeForm(3, 'mongo');">Execute MongoDB</button>
                 </form>
           </div>
           <div class="row form-row mt-2 query4 {% if query != '4' %}d-none{% endif %}">
@@ -60,8 +62,9 @@
                   <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-2" name="latitude" placeholder="Latitude" value="{% if query == '4' %}{{values[1]}}{% endif %}">
                   <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-2" name="radius" placeholder="Distance (Meters)" value="{% if query == '4' %}{{values[2]}}{% endif %}">
                   <input type="hidden" name="selectedQuery" value="4">
-                  
-                  <button type="submit" class="btn btn-success">Submit</button>
+                  <input type="hidden" name="selectedDB">
+                  <button type="submit" class="btn btn-success" onclick="executeForm(4, 'neo4j');">Execute Neo4j</button>
+                  <button type="submit" class="btn btn-success" onclick="executeForm(4, 'mongo');">Execute MongoDB</button>
                 </form>
           </div>
         </div>
@@ -168,6 +171,18 @@
               if (query === 1) {
                 document.form1.selectedDB.value = database;
                 document.form1.submit()
+              }
+              else if(query === 2) {
+                document.form2.selectedDB.value = database;
+                document.form2.submit()
+              }
+              else if(query === 3) {
+                document.form3.selectedDB.value = database;
+                document.form3.submit()
+              }
+              else if(query === 4) {
+                document.form4.selectedDB.value = database;
+                document.form4.submit()
               }
             }
 
