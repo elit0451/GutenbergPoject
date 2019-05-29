@@ -2,6 +2,7 @@ import sys
 import csv
 
 from neo4j import GraphDatabase, Transaction
+from utilities import Importer
 
 uri = 'bolt://localhost:7687'
 auth=('neo4j', 'secur3P4ss')
@@ -48,10 +49,11 @@ def composeBookCreate(booksData):
 
                 if(count > 100):
                     transaction.commit()
+                    Importer.getInstance().updateProgress('neo',True,count)
                     count = 0
                     transaction = session.begin_transaction()
-
             transaction.commit()
+            Importer.getInstance().updateProgress('neo',True,count)
 
         driver.close()
         print('Finished importing books in Neo4j')
@@ -74,6 +76,8 @@ def loadCitiesFromCSV(path):
     '''
     neov(constraintQuery)
     neov(query)
+    
+    Importer.getInstance().updateProgress('neo',False,100)
     print('Finished importing cities in Neo4j')   
 
 def deleteAllCities():

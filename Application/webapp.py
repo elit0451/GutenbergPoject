@@ -1,9 +1,26 @@
 #!/usr/bin/python3
-from utilities import createMap
+from utilities import createMap, Importer
 from flask import Flask,render_template, request,jsonify,Response
 from queryComposer import executeQuery
+from app import runImport
 
 app = Flask(__name__)
+
+@app.route('/progress', methods = ['GET'])
+def getProgress():
+    totalBooks, totalCities, parsedCount, currentBookCountMongo, currentCityCountMongo, currentBookCountNeo, currentCityCountNeo = Importer.getInstance().getImportDetails()
+    return jsonify(
+        {'books': 
+            {
+                'total': totalBooks, 'parsed': parsedCount, 'mongo':currentBookCountMongo, 'neo':currentBookCountNeo}, 
+                'cities':  {'total': totalCities, 'mongo':currentCityCountMongo, 'neo':currentCityCountNeo
+            }
+        })
+
+@app.route('/import', methods = ['GET'])
+def startImport():
+    runImport()
+    return 'OK'
 
 @app.route('/', methods = ['GET'])
 def getIndex():
