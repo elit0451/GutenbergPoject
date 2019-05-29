@@ -1,4 +1,5 @@
 import mongoImporter
+import csv
 from neo4jImporter import neov
 from time import time
 
@@ -203,41 +204,62 @@ def neoQuery4(long, lat, radius):
 
     return (result, end - start)
 
+
+def writeToCSV(queryNr, db, time):
+    with open('Timings.csv','a') as csvFile:
+        if(db == 'mongo'):
+            csvStr = ',' + queryNr + ',' + db + ',' + time
+        elif(db == 'neo4j'):
+            csvStr = '\n' + queryNr + ',' + db + ',' + time
+        csvFile.write(csvStr)
+        print(csvStr)
+        csvFile.close() 
+        print('Done writing')
+
 def executeQuery(database, query, values):
     if(database == 'neo4j'):
         if(query == '1'):
             result, time = neoQuery1(values[0])
-            return (result, None, time)
+            writeToCSV(query, database, str(time)[:7])
+            return (result, None, str(time)[:7])
 
         elif(query == '2'):
             result, time = neoQuery2(values[0])
-            return (result, None, time)
+            writeToCSV(query, database, str(time)[:7])
+            return (result, None, str(time)[:7])
 
         elif(query == '3'):
-            query, time = neoQuery3(values[0])
-            result = neoQuery3Cities(query)
-            resultExtra = neoQuery3Titles(query)
-            return (result, resultExtra, time)
+            execQuery, time = neoQuery3(values[0])
+            result = neoQuery3Cities(execQuery)
+            resultExtra = neoQuery3Titles(execQuery)
+            writeToCSV(query, database, str(time)[:7])
+            return (result, resultExtra, str(time)[:7])
 
         elif(query == '4'):
             result, time = neoQuery4(values[0], values[1],values[2])
-            return (result, None, time)
+            writeToCSV(query, database, str(time)[:7])
+            return (result, None, str(time)[:7])
             
     elif(database == 'mongo'):
         if(query == '1'):
             result, time = mongoQuery1(values[0])
-            return (result, None, time)
+            writeToCSV(query, database, str(time)[:7])
+            return (result, None, str(time)[:7])
 
         elif(query == '2'):
             result, time = mongoQuery2(values[0])
-            return (result, None, time)
+            writeToCSV(query, database, str(time)[:7])
+            return (result, None, str(time)[:7])
 
         elif(query == '3'):
             preResult, time = mongoQuery3(values[0])
             resultExtra = mongoQuery3Titles(preResult)
             result, queryTime = mongoQuery3Cities(resultExtra)
-            return (result, resultExtra, time + queryTime)
+            writeToCSV(query, database, str(time + queryTime)[:7])
+            return (result, resultExtra, str(time + queryTime)[:7])
 
         elif(query == '4'):
             result, time = mongoQuery4(values[0],values[1],values[2])
-            return (result, None, time)
+            writeToCSV(query, database, str(time)[:7])
+            return (result, None, str(time)[:7])
+           
