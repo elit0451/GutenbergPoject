@@ -63,7 +63,7 @@ def runImport():
 		except:
 			print('Error in ' + booksDir + '/' + bookFile)
 		
-		if(bookCount > 500):
+		if(bookCount > 50):
 			Importer.getInstance().updateProgress(None,True,bookCount)
 			bookCount = 0
 		bookCount += 1
