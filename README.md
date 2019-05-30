@@ -82,13 +82,13 @@ If it does, now we are ready to proceed to the next step. Navigate to the folder
 
 ```docker run --rm -v $(pwd)/mongo_data:/data/db --publish=27017:27017 --name mongodb -d mongo:latest```
 
-</br></br>
+</br>
 
 After this is done the last step is to go into the application folder and execute the _“webapp.py”_ file with the command `python webapp.py` or `python3 webapp.py` depending on your installation.
 
 </br>
 
-With all the work out of the way you can now easily navigate to `http://localhost:3333` and be presented with the import screen of our application. If all the steps before went well you just need to press **“Start Importing”** as seen below:
+With all the work out of the way you can now easily navigate to [http://localhost:3333](http://localhost:3333) and be presented with the import screen of our application. If all the steps before went well you just need to press **“Start Importing”** as seen below:
 
 <p align="center">
 <img src="./Images/2.png" width="75%">
@@ -117,7 +117,7 @@ Two indexes were created on the _Geodata Collection_ which allowed for fast look
 
 </br>
 
-<img src="./Images/Neo4JModel.png" width="40%">
+<img src="./Images/Neo4JModel.png" width="50%">
 
 For **Neo4j**, the team focused on keeping the two domains separated, leading to two node labels being created, _Book_ and _City_. Since relationships are part of the essential Neo4j nature, we took advantage of it to keep track of all the cities mentioned by a book.
 Due to the dataset containing multiple entries per city name, a _Constraint_ was created on this field to avoid several city records with the same name.  
