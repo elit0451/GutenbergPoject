@@ -65,7 +65,7 @@
       <div class="container" style="margin-top:30px">
         <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
           <div class="row">
-              <h5 style="color: #727C92;">Select a query: {{time}}</h5>
+              <h5 style="color: #727C92;">Select a query:</h5>
               <select name="queryPicker" id="queryPicker" class="form-control">
               	  <option value="" selected disabled hidden>Choose here</option>
                   <option value="1" {% if query == '1' %}selected{% endif %}>Query 1</option>
@@ -121,6 +121,7 @@
 
             {% if query == "1"%}
             <div class="jumbotron bg-light resultTron" style="border: 3px solid #929FBA;">
+                <h5 style="color: #727C92;">Query took: {{time}}s</h5>
               <table class="table table-hover query1 query4">
                   <thead>
                     <tr>
@@ -142,6 +143,7 @@
 
             {% if query == "2" or query == "3" %}
             <div class="jumbotron bg-light resultTron" style="border: 3px solid #929FBA;">
+                <h5 style="color: #727C92;">Query took: {{time}}s</h5>
               <div class="query2 query3" style="min-height: 500px !important; height: 500px;">
                   {{map|safe}}
               </div>
@@ -150,6 +152,7 @@
 
             {% if query == "4"%}
             <div class="jumbotron bg-light resultTron" style="border: 3px solid #929FBA;">
+                <h5 style="color: #727C92;">Query took: {{time}}s</h5>
               <table class="table query1 query4">
                   <thead>
                     <tr>
