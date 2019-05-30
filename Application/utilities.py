@@ -16,7 +16,7 @@ def createMap(locations):
     if(len(locations) > 0):
         for location in locations:
             tooltip = location[0]
-            folium.Marker([location[2], location[1]], popup='<i><b>latitude</b>: ' + str(location[1]) + ', <b>longitude</b>: ' + str(location[2]) + '</i>', tooltip=tooltip).add_to(m)
+            folium.Marker([location[2], location[1]], popup='<i><b>latitude</b>: ' + str(location[2]) + ', <b>longitude</b>: ' + str(location[1]) + '</i>', tooltip=tooltip).add_to(m)
 
     return m._repr_html_()
 
