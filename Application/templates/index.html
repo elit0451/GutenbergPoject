@@ -16,45 +16,52 @@
           <a class="navbar-brand" style="color: #ffffff;">Exam project</br><em>&nbsp;&nbsp;&nbsp;&nbsp;"Databases for Developers"</em> course</a>
       </nav>
       
-            <!-- Button trigger modal -->
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        Launch demo modal
-      </button>
+      {% if imported == False %}
 
       <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="importModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Import data</h5>
+              <h5 class="modal-title" id="importModalLabel">Import data</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
+              <h2>Book parsing (python):</h2>
               <div class="progress" style="margin-top: 1rem;">
                 <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" id="parsingBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
+              <hr>
+              <h3>MongoDB:</h3>
+              <h5>Cities</h5>
               <div class="progress" style="margin-top: 1rem;">
-                <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" id="mongoCitiesBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" id="mongoCitiesBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
+              <h5>Books</h5>
               <div class="progress" style="margin-top: 1rem;">
-                <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" id="mongoBooksBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" id="mongoBooksBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
+              <hr>
+              <h3>Neo4J:</h3>
+              <h5>Cities</h5>
               <div class="progress" style="margin-top: 1rem;">
-                <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" id="neoCitiesBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" id="neoCitiesBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
+              <h5>Books</h5>
               <div class="progress" style="margin-top: 1rem;">
-                <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" id="neoBooksBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-secondary progress-bar-striped progress-bar-animated" id="neoBooksBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Start Importing</button>
+              <button type="button" class="btn btn-primary" id="importBtn" onclick="startImport();">Start Importing</button>
+              <button type="button" class="btn btn-danger" id="closeBtn" data-dismiss="modal" style="display: none">Finish</button>
             </div>
           </div>
         </div>
       </div>
-
+      {% endif %}
       <div class="container" style="margin-top:30px">
         <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
           <div class="row">
@@ -113,7 +120,7 @@
             <div class="col-sm-12">
 
             {% if query == "1"%}
-            <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
+            <div class="jumbotron bg-light resultTron" style="border: 3px solid #929FBA;">
               <table class="table table-hover query1 query4">
                   <thead>
                     <tr>
@@ -134,7 +141,7 @@
             {% endif %}
 
             {% if query == "2" or query == "3" %}
-            <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
+            <div class="jumbotron bg-light resultTron" style="border: 3px solid #929FBA;">
               <div class="query2 query3" style="min-height: 500px !important; height: 500px;">
                   {{map|safe}}
               </div>
@@ -142,7 +149,7 @@
             {% endif %}
 
             {% if query == "4"%}
-            <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
+            <div class="jumbotron bg-light resultTron" style="border: 3px solid #929FBA;">
               <table class="table query1 query4">
                   <thead>
                     <tr>
@@ -178,7 +185,7 @@
           <div class="row">
             <div class="col-sm-12">
               {% if query == "3"%}
-                <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
+                <div class="jumbotron bg-light resultTron" style="border: 3px solid #929FBA;">
                   <table class="table table-hover query3">
                     <thead>
                       <tr>
@@ -232,35 +239,50 @@
               $('.query1').removeClass('d-none');    
           }
 
-          if ($(this).val() == 2 ) {
+          else if ($(this).val() == 2 ) {
               $('.query1').addClass('d-none'); 
               $('.query3').addClass('d-none'); 
               $('.query4').addClass('d-none');    
               $('.query2').removeClass('d-none');  
           }
 
-          if ($(this).val() == 3 ) {
+          else if ($(this).val() == 3 ) {
               $('.query1').addClass('d-none'); 
               $('.query2').addClass('d-none'); 
               $('.query4').addClass('d-none');  
               $('.query3').removeClass('d-none');    
           }
 
-          if ($(this).val() == 4 ) {
+          else if ($(this).val() == 4 ) {
               $('.query1').addClass('d-none'); 
               $('.query2').addClass('d-none'); 
               $('.query3').addClass('d-none');  
               $('.query4').removeClass('d-none');   
           }
+
+          $('.resultTron').hide();
       })
+      
+    {% if imported == False %}
+      $( document ).ready(function() {
+          $('#importModal').modal('show');
+      });
+
+      function startImport(){
+        $('#importBtn').prop("disabled",true);
+        $.ajax({
+              type: 'GET',
+              url: 'http://10.0.75.2:3333/import'
+          });
+      }
+
       function updateProgress(current, max, id){
         percentage = current * 100 / max;
         if(percentage > 100) percentage = 100;
-        if(percentage <= 0) percentage = 1;
         $(id).css('width', percentage+'%');
       }
 
-      setInterval(function(){ 
+      var interval = setInterval(function(){ 
           $.ajax({
               type: 'GET',
               url: 'http://10.0.75.2:3333/progress',
@@ -276,11 +298,15 @@
                 updateProgress(data.books.mongo, maxBooks, '#mongoBooksBar');
                 updateProgress(data.cities.neo, maxCities, '#neoCitiesBar');
                 updateProgress(data.books.neo, maxBooks, '#neoBooksBar');
-              console.log(data);
-              console.log("HERE");
+                if(data.books.parsed >= maxBooks && data.cities.mongo >= maxCities && data.cities.neo >= maxCities && data.books.mongo >= maxBooks && data.books.neo >= maxBooks)
+                {
+                  $('#closeBtn').show();
+                  clearInterval(interval);
+                }
               }
           });
       }, 5000);
+    {% endif %}
       </script>
   </body>
   <footer class="page-footer font-small mdb-color fixed-bottom" style="background-color: #757F95;">

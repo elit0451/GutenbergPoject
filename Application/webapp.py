@@ -19,12 +19,13 @@ def getProgress():
 
 @app.route('/import', methods = ['GET'])
 def startImport():
-    runImport()
-    return 'OK'
+    if(Importer.getInstance().getImportedState() == False):
+        runImport()
+    return 'IMPORT OK'
 
 @app.route('/', methods = ['GET'])
 def getIndex():
-    return render_template('index.html')
+    return render_template('index.html', imported = Importer.getInstance().getImportedState())
 
 @app.route('/', methods = ['POST'])
 def postIndex():
@@ -70,7 +71,7 @@ def postIndex():
     if(_createMap):
         _map = createMap(_result).replace('60%', '48%')
 
-    return render_template('index.html', showMain=_showMain, showExtra=_showExtra, query=selectedQuery, result=_result, resultExtra=_resultExtra, values=_values, time=_time, map=_map)
+    return render_template('index.html', showMain=_showMain, showExtra=_showExtra, query=selectedQuery, result=_result, resultExtra=_resultExtra, values=_values, time=_time, map=_map, imported = Importer.getInstance().getImportedState())
 
 if __name__ == '__main__':
     app.run(host ='0.0.0.0', port = 3333, debug = True)

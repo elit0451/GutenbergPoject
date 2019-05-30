@@ -47,7 +47,7 @@ def composeBookCreate(booksData):
                 transaction.run(query, {"title": title, "author": author})
                 count += 1
 
-                if(count > 100):
+                if(count > 500):
                     transaction.commit()
                     Importer.getInstance().updateProgress('neo',True,count)
                     count = 0

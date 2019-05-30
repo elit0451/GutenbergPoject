@@ -8,8 +8,8 @@ def createMap(locations):
         location=[30.816676, -32.215901],
         zoom_start=2,
         min_zoom=2,
-        min_lon=-45,
-        max_lon=-35,
+        min_lon=-180,
+        max_lon=180,
         max_bounds=True
     )
 
@@ -45,6 +45,7 @@ class Importer:
         self.currentBookCountNeo = 0
         self.currentCityCountMongo = 0
         self.currentBookCountMongo = 0
+        self.imported = False
         if Importer.__instance != None:
             raise Exception("This class is a singleton!")
         else:
@@ -71,3 +72,10 @@ class Importer:
                 self.currentCityCountMongo += count
         else:
             self.currentBookParseCount += count
+        
+
+        if(self.currentBookCountNeo >= self.totalBooks and self.currentBookCountMongo >= self.totalBooks and self.currentCityCountNeo >= self.totalCities and self.currentCityCountMongo >= self.totalCities and self.currentBookParseCount >= self.totalBooks):
+            self.imported = True
+
+    def getImportedState(self):
+        return self.imported
