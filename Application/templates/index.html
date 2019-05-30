@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <title>Gutenberg project</title>
+  </head>
+  <body>
+      <nav class="navbar navbar-light" style="text-align:center; background-color: #929FBA;">
+          <a class="navbar-brand" style="color: #ffffff;">Welcome to <b>Gutenberg Querier</b></a>
+          <a class="navbar-brand" style="color: #ffffff;">Exam project</br><em>&nbsp;&nbsp;&nbsp;&nbsp;"Databases for Developers"</em> course</a>
+      </nav>
+      
+      {% if imported == False %}
+
+      <!-- Modal -->
+      <div class="modal fade" id="importModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="importModalLabel">Import data</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <h2>Book parsing (python):</h2>
+              <div class="progress" style="margin-top: 1rem;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" id="parsingBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <hr>
+              <h3>MongoDB:</h3>
+              <h5>Cities</h5>
+              <div class="progress" style="margin-top: 1rem;">
+                <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" id="mongoCitiesBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <h5>Books</h5>
+              <div class="progress" style="margin-top: 1rem;">
+                <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" id="mongoBooksBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <hr>
+              <h3>Neo4J:</h3>
+              <h5>Cities</h5>
+              <div class="progress" style="margin-top: 1rem;">
+                <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" id="neoCitiesBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <h5>Books</h5>
+              <div class="progress" style="margin-top: 1rem;">
+                <div class="progress-bar bg-secondary progress-bar-striped progress-bar-animated" id="neoBooksBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" id="importBtn" onclick="startImport();">Start Importing</button>
+              <button type="button" class="btn btn-danger" id="closeBtn" data-dismiss="modal" style="display: none">Finish</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      <div class="container" style="margin-top:30px">
+        <div class="jumbotron bg-light" style="border: 3px solid #929FBA;">
+          <div class="row">
+              <h5 style="color: #727C92;">Select a query:</h5>
+              <select name="queryPicker" id="queryPicker" class="form-control">
+              	  <option value="" selected disabled hidden>Choose here</option>
+                  <option value="1" {% if query == '1' %}selected{% endif %}>Query 1</option>
+                  <option value="2" {% if query == '2' %}selected{% endif %}>Query 2</option>
+                  <option value="3" {% if query == '3' %}selected{% endif %}>Query 3</option>
+                  <option value="4" {% if query == '4' %}selected{% endif %}>Query 4</option>
+              </select>
+          </div>
+          <div class="row form-row mt-4 query1 {% if query != '1' %}d-none{% endif %}">
+              <form class="form-inline" name="form1" method="POST">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="cityName" placeholder="City Name" value="{% if query == '1' %}{{values[0]}}{% endif %}">
+                  <input type="hidden" name="selectedQuery" value="1">
+                  <input type="hidden" name="selectedDB">
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(1, 'neo4j');">Execute Neo4j</button>
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(1, 'mongo');">Execute MongoDB</button>
+                
+                </form>
+          </div>
+          <div class="row form-row mt-4 query2 {% if query != '2' %}d-none{% endif %}">
+              <form class="form-inline" name="form2" method="POST">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="bookTitle" placeholder="Book Title" value="{% if query == '2' %}{{values[0]}}{% endif %}">
+                  <input type="hidden" name="selectedQuery" value="2">
+                  <input type="hidden" name="selectedDB">
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(2, 'neo4j');">Execute Neo4j</button>
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(2, 'mongo');">Execute MongoDB</button>
+                </form>
+          </div>
+          <div class="row form-row mt-4 query3 {% if query != '3' %}d-none{% endif %}">
+              <form class="form-inline" name="form3" method="POST">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="authorName" placeholder="Author Name" value="{% if query == '3' %}{{values[0]}}{% endif %}">
+                  <input type="hidden" name="selectedQuery" value="3">
+                  <input type="hidden" name="selectedDB">
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(3, 'neo4j');">Execute Neo4j</button>
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(3, 'mongo');">Execute MongoDB</button>
+                </form>
+          </div>
+          <div class="row form-row mt-4 query4 {% if query != '4' %}d-none{% endif %}">
+              <form class="form-inline" name="form4" method="POST">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="longitude" placeholder="Longitude" value="{% if query == '4' %}{{values[0]}}{% endif %}">
+                  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="latitude" placeholder="Latitude" value="{% if query == '4' %}{{values[1]}}{% endif %}">
+                  <input type="number" class="form-control mb-2 mr-sm-2 mb-sm-0" name="radius" placeholder="Distance (Meters)" value="{% if query == '4' %}{{values[2]}}{% endif %}">
+                  <input type="hidden" name="selectedQuery" value="4">
+                  <input type="hidden" name="selectedDB">
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(4, 'neo4j');">Execute Neo4j</button>
+                  <button type="submit" class="btn btn-success" style="margin: 5px;" onclick="executeForm(4, 'mongo');">Execute MongoDB</button>
+                </form>
+          </div>
+        </div>
+
+        {% if showMain %}
+          <div class="row my-5">
+            <div class="col-sm-12">
+
+            {% if query == "1"%}
+            <div class="jumbotron bg-light resultTron" style="border: 3px solid #929FBA;">
+                <h5 style="color: #727C92;">Query took: {{time}}s</h5>
+              <table class="table table-hover query1 query4">
+                  <thead>
+                    <tr>
+                      <th style="color: #727C92;">Title</th>
+                      <th style="color: #727C92;">Author</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in result %}
+                      <tr>
+                          <td>{{item[0]}}</td>
+                          <td>{{item[1]}}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% endif %}
+
+            {% if query == "2" or query == "3" %}
+            <div class="jumbotron bg-light resultTron" style="border: 3px solid #929FBA;">
+                <h5 style="color: #727C92;">Query took: {{time}}s</h5>
+              <div class="query2 query3" style="min-height: 500px !important; height: 500px;">
+                  {{map|safe}}
+              </div>
+            </div>
+            {% endif %}
+
+            {% if query == "4"%}
+            <div class="jumbotron bg-light resultTron" style="border: 3px solid #929FBA;">
+                <h5 style="color: #727C92;">Query took: {{time}}s</h5>
+              <table class="table query1 query4">
+                  <thead>
+                    <tr>
+                      <th style="color: #727C92;">City</th>
+                      <th style="color: #727C92;">Book</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for city in result %}
+                      <tr>
+                          <td>{{city[0]}}</td>
+                          <td>
+                            <table class="table-striped">
+                              {% for book in city[1] %}
+                                <tr>
+                                  <td>{{book}}</td>
+                                </tr>
+                              {% endfor %}
+                            </table>
+                          </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% endif %}
+
+            </div>
+          </div>
+        {% endif %}
+
+        {% if showExtra %}
+          <div class="row">
+            <div class="col-sm-12">
+              {% if query == "3"%}
+                <div class="jumbotron bg-light resultTron" style="border: 3px solid #929FBA;">
+                  <table class="table table-hover query3">
+                    <thead>
+                      <tr>
+                        <th style="color: #727C92;">Title</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for title in resultExtra %}
+                        <tr>
+                            <td>{{title}}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+        
+      </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script>
+      function executeForm(query, database){
+              if (query === 1) {
+                document.form1.selectedDB.value = database;
+                document.form1.submit()
+              }
+              else if(query === 2) {
+                document.form2.selectedDB.value = database;
+                document.form2.submit()
+              }
+              else if(query === 3) {
+                document.form3.selectedDB.value = database;
+                document.form3.submit()
+              }
+              else if(query === 4) {
+                document.form4.selectedDB.value = database;
+                document.form4.submit()
+              }
+            }
+
+      $('#queryPicker').on('change', function(){       
+          if ($(this).val() == 1 ) {
+              $('.query2').addClass('d-none'); 
+              $('.query3').addClass('d-none'); 
+              $('.query4').addClass('d-none');  
+              $('.query1').removeClass('d-none');    
+          }
+
+          else if ($(this).val() == 2 ) {
+              $('.query1').addClass('d-none'); 
+              $('.query3').addClass('d-none'); 
+              $('.query4').addClass('d-none');    
+              $('.query2').removeClass('d-none');  
+          }
+
+          else if ($(this).val() == 3 ) {
+              $('.query1').addClass('d-none'); 
+              $('.query2').addClass('d-none'); 
+              $('.query4').addClass('d-none');  
+              $('.query3').removeClass('d-none');    
+          }
+
+          else if ($(this).val() == 4 ) {
+              $('.query1').addClass('d-none'); 
+              $('.query2').addClass('d-none'); 
+              $('.query3').addClass('d-none');  
+              $('.query4').removeClass('d-none');   
+          }
+
+          $('.resultTron').hide();
+      })
+      
+    {% if imported == False %}
+      $( document ).ready(function() {
+          $('#importModal').modal('show');
+      });
+
+      function startImport(){
+        $('#importBtn').prop("disabled",true);
+        $.ajax({
+              type: 'GET',
+              url: 'http://10.0.75.2:3333/import'
+          });
+      }
+
+      function updateProgress(current, max, id){
+        percentage = current * 100 / max;
+        if(percentage > 100) percentage = 100;
+        $(id).css('width', percentage+'%');
+      }
+
+      var interval = setInterval(function(){ 
+          $.ajax({
+              type: 'GET',
+              url: 'http://10.0.75.2:3333/progress',
+              error: function(xhr,status,error)
+              {
+                console.log("ERROR GETTING PROGRESS FROM WEB APP");
+              },
+              success: function (data) {
+                maxBooks = data.books.total;
+                maxCities = data.cities.total;
+                updateProgress(data.books.parsed, maxBooks, '#parsingBar');
+                updateProgress(data.cities.mongo, maxCities, '#mongoCitiesBar');
+                updateProgress(data.books.mongo, maxBooks, '#mongoBooksBar');
+                updateProgress(data.cities.neo, maxCities, '#neoCitiesBar');
+                updateProgress(data.books.neo, maxBooks, '#neoBooksBar');
+                if(data.books.parsed >= maxBooks && data.cities.mongo >= maxCities && data.cities.neo >= maxCities && data.books.mongo >= maxBooks && data.books.neo >= maxBooks)
+                {
+                  $('#closeBtn').show();
+                  clearInterval(interval);
+                }
+              }
+          });
+      }, 5000);
+    {% endif %}
+      </script>
+  </body>
+  <footer class="page-footer font-small mdb-color fixed-bottom" style="background-color: #757F95;">
+      <div class="footer-copyright text-center py-3" style="color: #B4B8BF;">© 2019 Made by:
+          <a style="color: #ffffff;">David Alves & Elitsa Marinovska</a>
+        </div>
+    </footer>
+</html>

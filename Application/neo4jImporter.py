@@ -2,6 +2,7 @@ import sys
 import csv
 
 from neo4j import GraphDatabase, Transaction
+from utilities import Importer
 
 uri = 'bolt://localhost:7687'
 auth=('neo4j', 'secur3P4ss')
@@ -13,7 +14,7 @@ def neo(command, driver):
             result = session.run(command)
         return result # result is a resultset/cursor for neo4j
     except Exception as ex:
-        print(str(ex), file=sys.stderr)
+        print(ex, file=sys.stderr)
         
 def neov(command):
     driver = getNeoDriver()
@@ -46,12 +47,13 @@ def composeBookCreate(booksData):
                 transaction.run(query, {"title": title, "author": author})
                 count += 1
 
-                if(count > 100):
+                if(count > 500):
                     transaction.commit()
+                    Importer.getInstance().updateProgress('neo',True,count)
                     count = 0
                     transaction = session.begin_transaction()
-
             transaction.commit()
+            Importer.getInstance().updateProgress('neo',True,count)
 
         driver.close()
         print('Finished importing books in Neo4j')
@@ -74,6 +76,8 @@ def loadCitiesFromCSV(path):
     '''
     neov(constraintQuery)
     neov(query)
+    
+    Importer.getInstance().updateProgress('neo',False,100)
     print('Finished importing cities in Neo4j')   
 
 def deleteAllCities():

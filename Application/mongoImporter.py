@@ -1,35 +1,48 @@
 import csv
-from pymongo import MongoClient
+from pymongo import MongoClient, TEXT, GEOSPHERE
 
 from pprint import pprint
+from utilities import Importer
 
 client = MongoClient('mongodb://localhost:27017/')
 db=client.gutenberg
 
 def importCityData(path):
 	db.geodata.delete_many({})
+	db.geodata.drop_indexes()
+	db.geodata.create_index([('city', TEXT)], name='city_index', default_language='english')
+	db.geodata.create_index([('location', GEOSPHERE)], name='location_index')
 	# '../Resources/cities5000.csv'
-	with open(path,'r',encoding='utf-8', errors='ignore') as csv_file:
+	with open(path,'r',encoding='utf-8', errors='replace') as csv_file:
 		csv_reader = csv.reader(csv_file, delimiter='\t')
+		count = 0
 		geodata = []
 		for row in csv_reader:
-		# coordinates: [longitude, latitude]
-			datum = {
-				'city':str(row[2]),
-				'location':{
-					'type': 'Point',
-					'coordinates': [float(row[5]), float(row[4])]
+			if(row[4] != '' and row[5] != ''):
+			# coordinates: [longitude, latitude]
+				datum = {
+					'city':str(row[2]),
+					'location':{
+						'type': 'Point',
+						'coordinates': [float(row[5]), float(row[4])]
+					}
 				}
-			}
-			geodata.append(datum)
-			if(len(geodata) > 500):
-				db.geodata.insert_many(geodata)
-				geodata.clear()
-		print ('done importing cities')
+				geodata.append(datum)
+				if(len(geodata) > 500):
+					db.geodata.insert_many(geodata)
+					geodata.clear()
+				if(count > 500):
+					Importer.getInstance().updateProgress('mongo',False,count)
+					count = 0
+				count += 1
+		db.geodata.insert_many(geodata)
+		Importer.getInstance().updateProgress('mongo',False,count)
+		print ('Finished importing cities')
 
 def importBooksData(booksData):
 	db.books.delete_many({})
 	books = []
+	count = 0
 	for data in booksData:
 		book = {
 			# data - tuple of (tuple of title and author) and cities
@@ -41,7 +54,17 @@ def importBooksData(booksData):
 		if(len(books) > 500):
 			db.books.insert_many(books)
 			books.clear()
+		if(count > 500):
+			Importer.getInstance().updateProgress('mongo',True,count)
+			count = 0
+		count += 1
+	db.books.insert_many(books)
+	Importer.getInstance().updateProgress('mongo',True,count)
 	
-	print ('done importing books')
+	print ('Finished importing books')
 
-
+def executeQueryAgg(collection, query):
+	if(collection == 'books'):
+		return db.books.aggregate(query)
+	elif(collection == 'geodata'):
+		return db.geodata.aggregate(query)

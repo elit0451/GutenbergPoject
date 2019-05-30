@@ -1,0 +1,8 @@
+Application/__pycache__
+Application/templates/map.html
+Application/Timings.csv
+Databases/mongo_data/
+Databases/neo4j_data/
+Resources/Books/
+Resources/Offline_Catalogue/
+*.pyc
