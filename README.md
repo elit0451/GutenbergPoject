@@ -3,7 +3,7 @@
 <h3 align="right">Semester Project of <em>"Databases for Developers"</em> course</h3> 
 </br>
 
-The final result of this project is an application which operates with a Document-oriented <img src="https://jaystack.com/wp-content/uploads/2015/12/mongodb-leaf-e1497443272821.png" height="25" align="center"> and a Graph <img src="./images/neo4j_logo_globe.png" height="25" align="center"> database. As a complement, a front-end <img src="https://image.flaticon.com/icons/svg/187/187178.svg" height="25" align="center"> has been made to ease the process of interchanging <img src="https://www.svgrepo.com/show/199368/exchange-change.svg" height="25" align="center"> the database paradigm in use, while quering <img src="https://cdn.onlinewebfonts.com/svg/img_333749.png" height="20" align="center"> the data. 
+The final result of this project is an application which operates with a Document-oriented <img src="https://jaystack.com/wp-content/uploads/2015/12/mongodb-leaf-e1497443272821.png" height="25" align="center"> and a Graph <img src="./Images/neo4j_logo_globe.png" height="25" align="center"> database. As a complement, a front-end <img src="https://image.flaticon.com/icons/svg/187/187178.svg" height="25" align="center"> has been made to ease the process of interchanging <img src="https://www.svgrepo.com/show/199368/exchange-change.svg" height="25" align="center"> the database paradigm in use, while quering <img src="https://cdn.onlinewebfonts.com/svg/img_333749.png" height="20" align="center"> the data. 
 
 The end user is provided with 4 different ways of querying the records in the persisted storages. Each query has been executed 20 times (per database) and the times taken <img src="https://image.flaticon.com/icons/svg/147/147186.svg" height="20" align="center"> for their executions were recorded respectively. This enabled us to draw conclusions :bar_chart::chart_with_upwards_trend: from the timings we got, in regards of several different aspects for both databases.
 
@@ -11,7 +11,7 @@ The end user is provided with 4 different ways of querying the records in the pe
 
 ---
 <a name="toc"></a>
-## Table of Contents <img src="./images/125516c66e82c728ace21e0d46db978826878dba87e6ab03f60da1cd6416743e7853e37a25cbb77ef1132d43434d0eee1e020a17b8eb8339a3e46979820e5ae8d76b5d72943411adb0d41beb57bb72895d99a4fedb1294b7607caddecd5d340c04.png" align="center" height="45"> 
+## Table of Contents <img src="./Images/125516c66e82c728ace21e0d46db978826878dba87e6ab03f60da1cd6416743e7853e37a25cbb77ef1132d43434d0eee1e020a17b8eb8339a3e46979820e5ae8d76b5d72943411adb0d41beb57bb72895d99a4fedb1294b7607caddecd5d340c04.png" align="center" height="45"> 
 * [Application](#app)
 * [Queries](#query)
 * [Timings](#time)
@@ -25,8 +25,8 @@ The end user is provided with 4 different ways of querying the records in the pe
 ### Specifics
 - Docker :whale:
 - MongoDB <img src="https://jaystack.com/wp-content/uploads/2015/12/mongodb-leaf-e1497443272821.png" height="25" align="center"> 
-- Neo4j <img src="./images/neo4j_logo_globe.png" height="20" align="center">
-- Python <img src="./images/python.png" height="25">
+- Neo4j <img src="./Images/neo4j_logo_globe.png" height="20" align="center">
+- Python <img src="./Images/python.png" height="25">
 - Flask <img src="http://flask.pocoo.org/docs/0.12/_static/flask.png" height="20">
 - RDF <img src="https://dinacon.ch/wp-content/uploads/sites/4/2018/05/rdf-icon-with-shadow.png" height="20">
 - Folium <img src="https://cdn.iconscout.com/icon/free/png-256/world-map-earth-pin-marker-location-destination-5-22737.png" height="20">
@@ -264,7 +264,7 @@ RETURN c.name, collect(book.title)
 </br>
 
 <p align="right">
-<a href="#toc"><img src="./images/arrow.png" width="30"></a></p>
+<a href="#toc"><img src="./Images/arrow.png" width="30"></a></p>
 </details>
 
 ---
@@ -1336,7 +1336,7 @@ Within this table you can find all the single execution results (in seconds) tha
 </table>
 
 <p align="right">
-<a href="#toc"><img src="./images/arrow.png" width="30"></a></p>
+<a href="#toc"><img src="./Images/arrow.png" width="30"></a></p>
 
 </details>
 </br>
