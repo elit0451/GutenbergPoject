@@ -80,7 +80,7 @@ If it does, now we are ready to proceed to the next step. Navigate to the folder
 
 > MongoDB :
 
-```docker run --rm -v $(pwd)/mongo_data:/data/db --publish=27017:27017 --name mongodb -d mongo:latest```
+```docker run --rm -v ${PWD}/mongo_data:/data/db --publish=27017:27017 --name mongodb -d mongo:latest```
 
 </br>
 
