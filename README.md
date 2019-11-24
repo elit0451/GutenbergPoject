@@ -76,11 +76,13 @@ Please verify if your folder structure resembles the following image:
 If it does, now we are ready to proceed to the next step. Navigate to the folder **“Databases”** within your shell and start both database containers by executing the following commands:
 > Neo4J : 
 
-```docker run -d --rm --name neo4j --publish=7474:7474 --publish=7687:7687 -v ${PWD}/../Resources:/var/lib/neo4j/import -v ${PWD}/neo4j_data:/data --env NEO4J_AUTH=neo4j/secur3P4ss --env NEO4J_dbms_memory_heap_max__size=4G neo4j```
+```docker run -d --rm --name neo4j --publish=7474:7474 --publish=7687:7687 -v ${PWD}/../Resources:/var/lib/neo4j/import -v ${PWD}/neo4j_data:/data --env NEO4J_AUTH=neo4j/secur3P4ss --env NEO4J_dbms_memory_heap_max__size=4G neo4j```  
+NB:exclamation: For _Windows_ users you would need to make the extra step of creating a volume using `docker volume create --name=neo4j_data` before spinning the container.
 
 > MongoDB :
 
-```docker run --rm -v ${PWD}/mongo_data:/data/db --publish=27017:27017 --name mongodb -d mongo:latest```
+```docker run --rm -v ${PWD}/mongo_data:/data/db --publish=27017:27017 --name mongodb -d mongo:latest```  
+NB:exclamation: For _Windows_ users you would need to make the extra step of creating a volume using `docker volume create --name=mongo_data` before spinning the container.
 
 </br>
 
