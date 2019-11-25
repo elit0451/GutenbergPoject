@@ -41,6 +41,8 @@ def importCityData(path):
 
 def importBooksData(booksData):
 	db.books.delete_many({})
+	db.books.drop_indexes()
+	db.books.create_index([('author', TEXT)], name='author_index', default_language='english')
 	books = []
 	count = 0
 	for data in booksData:

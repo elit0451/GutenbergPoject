@@ -275,7 +275,7 @@
         $('#importBtn').prop("disabled",true);
         $.ajax({
               type: 'GET',
-              url: 'http://10.0.75.2:3333/import'
+              url: 'http://localhost:3333/import'
           });
       }
 
@@ -288,7 +288,7 @@
       var interval = setInterval(function(){ 
           $.ajax({
               type: 'GET',
-              url: 'http://10.0.75.2:3333/progress',
+              url: 'http://localhost:3333/progress',
               error: function(xhr,status,error)
               {
                 console.log("ERROR GETTING PROGRESS FROM WEB APP");

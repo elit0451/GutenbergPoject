@@ -54,8 +54,14 @@ def mongoQuery2(bookTitle):
     ]
 
     start = time()
+    print("started2")
     results = mongoImporter.executeQueryAgg('books', pipeline2)
     end = time()
+    print("finished2")
+    
+    print(start)
+    print(end)
+    print(end - start)
 
     for result in results:
         if('location' in result):
@@ -71,24 +77,45 @@ def mongoQuery3(authorName):
     cityBooks = []
     pipeline3 = [
         {
-            "$match":{"author": authorName}
+            "$match":{"$text": { "$search": authorName}}
+        },
+        {
+            "$unwind": "$cities"
+        },
+        {
+            "$lookup":
+            {
+                "from": "geodata",
+                "localField": "cities",
+                "foreignField": "city",
+                "as": "cityCoordinates"
+            }
         },
         {
             "$project":{
                 "title": 1,
                 "cities": 1,
+                "location": { "$arrayElemAt": ["$cityCoordinates.location", 0] },
                 "_id": 0
             }
         }
     ]
 
     start = time()
+    print("started3")
     results = mongoImporter.executeQueryAgg('books', pipeline3)
+    print("finished3")
     end = time()
+    
+    print(start)
+    print(end)
+    print(end - start)
 
     for result in results:
+        print(result)
         cityBooks.append(result)
 
+    print(end - start)
     return (cityBooks, end - start)
 
 def mongoQuery3Titles(results):
@@ -254,6 +281,7 @@ def executeQuery(database, query, values):
         elif(query == '3'):
             preResult, time = mongoQuery3(values[0])
             resultExtra = mongoQuery3Titles(preResult)
+            print(resultExtra)
             result, queryTime = mongoQuery3Cities(resultExtra)
             writeToCSV(query, database, str(time + queryTime)[:7])
             return (result, resultExtra, str(time + queryTime)[:7])
