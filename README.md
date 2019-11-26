@@ -157,7 +157,7 @@ db.books.aggregate(
       "author": 1,
       "_id": 0
     }
-  }
+  })
 ```
 > <b>Neo4j</b>
 ```javascript
@@ -188,12 +188,13 @@ db.books.aggregate(
       }
   },
   {
-      "$project":{
+      "$project":
+      {
           "cities": 1,
           "location": { "$arrayElemAt": ["$cityCoordinates.location", 0] },
           "_id": 0
       }
-  }
+  })
 ```
 > <b>Neo4j</b>
 ```javascript
@@ -212,12 +213,13 @@ db.books.aggregate(
       "$match":{"author": "Bret Harte"}
   },
   {
-      "$project":{
+      "$project":
+      {
           "title": 1,
           "cities": 1,
           "_id": 0
       }
-  }
+  })
 ```
 > <b>Neo4j</b>
 ```javascript
@@ -233,24 +235,26 @@ RETURN book.title, collect(city)
 ```javascript
 db.geodata.aggregate(
   {         
-      "$geoNear": {
-      "distanceField": "location",
-      "near":
+      "$geoNear": 
       {
-          "type": 'Point',
-          "coordinates": [ 10.65771, 59.43403 ]
-      },
-      "maxDistance": 50000,
-      "spherical": "true",
-      "limit": 1000
+          "distanceField": "location",
+          "near":
+          {
+              "type": 'Point',
+              "coordinates": [ 10.65771, 59.43403 ]
+          },
+          "maxDistance": 50000,
+          "spherical": "true",
+          "limit": 1000
       }
   },
   {
-      "$project":{
+      "$project":
+      {
           "city": 1,
           "_id": 0
       }
-  }
+  })
 ```
 > <b>Neo4j</b>
 ```javascript
